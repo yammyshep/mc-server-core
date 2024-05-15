@@ -1,0 +1,4 @@
+name: servercore
+version: '${project.version}'
+main: com.jbuelow.servercore.Servercore
+api-version: '1.20'
