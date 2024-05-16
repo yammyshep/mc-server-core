@@ -1,4 +1,16 @@
-name: servercore
+name: ServerCore
 version: '${project.version}'
-main: com.jbuelow.servercore.Servercore
+main: com.jbuelow.servercore.ServerCore
 api-version: '1.20'
+
+depend:
+  - Vault
+  - PlaceholderAPI
+  - LuckPerms
+  - GuiEngine
+
+commands:
+  trust:
+    description: Trusts a player with building privileges
+    usage: /<command> <player>
+    permission: playertrust.trust
