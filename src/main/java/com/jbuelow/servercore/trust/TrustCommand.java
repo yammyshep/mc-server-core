@@ -1,5 +1,6 @@
 package com.jbuelow.servercore.trust;
 
+import com.jbuelow.servercore.trust.service.UserTrustService;
 import net.luckperms.api.LuckPerms;
 import net.luckperms.api.model.user.User;
 import net.luckperms.api.node.Node;
@@ -25,7 +26,7 @@ public class TrustCommand implements CommandExecutor {
             return false;
         }
 
-        RegisteredServiceProvider<LuckPerms> provider = Bukkit.getServicesManager().getRegistration(LuckPerms.class);
+        /*RegisteredServiceProvider<LuckPerms> provider = Bukkit.getServicesManager().getRegistration(LuckPerms.class);
         if (provider == null)
             return false;
         LuckPerms luckPerms = provider.getProvider();
@@ -34,7 +35,14 @@ public class TrustCommand implements CommandExecutor {
 
         // Add the trusted group to the user
         user.data().add(Node.builder("group.trusted").build());
-        provider.getProvider().getUserManager().saveUser(user);
+        provider.getProvider().getUserManager().saveUser(user);*/
+
+        RegisteredServiceProvider<UserTrustService> provider = Bukkit.getServicesManager().getRegistration(UserTrustService.class);
+        if (provider == null)
+            return false;
+        UserTrustService trust = provider.getProvider();
+
+        trust.setTrust(otherPlayer, true);
 
         sender.sendMessage("Successfully trusted user %user%!");
         return true;
