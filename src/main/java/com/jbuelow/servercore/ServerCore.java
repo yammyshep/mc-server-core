@@ -1,5 +1,6 @@
 package com.jbuelow.servercore;
 
+import com.jbuelow.servercore.balloon.BalloonModule;
 import com.jbuelow.servercore.trust.TrustModule;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -19,6 +20,7 @@ public final class ServerCore extends JavaPlugin {
     @Override
     public void onLoad() {
         modules.add(new TrustModule(this));
+        modules.add(new BalloonModule(this));
     }
 
     @Override
