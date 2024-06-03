@@ -2,6 +2,7 @@ package com.jbuelow.servercore;
 
 import com.jbuelow.servercore.trust.TrustCommand;
 import com.jbuelow.servercore.trust.TrustCheckEventListener;
+import com.jbuelow.servercore.trust.UntrustCommand;
 import com.jbuelow.servercore.trust.service.MapUserTrustService;
 import com.jbuelow.servercore.trust.service.UserTrustService;
 import org.bukkit.Bukkit;
@@ -18,6 +19,7 @@ public final class ServerCore extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new TrustCheckEventListener(), this);
 
         this.getCommand("trust").setExecutor(new TrustCommand());
+        this.getCommand("untrust").setExecutor(new UntrustCommand());
     }
 
     @Override

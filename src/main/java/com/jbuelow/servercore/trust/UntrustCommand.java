@@ -1,9 +1,6 @@
 package com.jbuelow.servercore.trust;
 
 import com.jbuelow.servercore.trust.service.UserTrustService;
-import net.luckperms.api.LuckPerms;
-import net.luckperms.api.model.user.User;
-import net.luckperms.api.node.Node;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -11,11 +8,11 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.RegisteredServiceProvider;
 
-public class TrustCommand implements CommandExecutor {
+public class UntrustCommand implements CommandExecutor {
     @Override
-    public boolean onCommand(CommandSender sender, Command command, String s, String[] args) {
+    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (args.length < 1) {
-            sender.sendMessage("Error: Must specify player to trust!");
+            sender.sendMessage("Error: Must specify player to untrust!");
             return false;
         }
 
@@ -31,10 +28,10 @@ public class TrustCommand implements CommandExecutor {
             return false;
         UserTrustService trust = provider.getProvider();
 
-        trust.setTrust(otherPlayer, true);
+        trust.setTrust(otherPlayer, false);
 
-        sender.sendMessage("Successfully trusted user %user%!");
-        otherPlayer.sendMessage("%user% has trusted you to the server.");
+        sender.sendMessage("Revoked trust from %user%.");
+        otherPlayer.sendMessage("Your server trust status has been revoked!");
         return true;
     }
 }

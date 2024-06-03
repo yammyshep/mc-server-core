@@ -13,4 +13,8 @@ commands:
   trust:
     description: Trusts a player with building privileges
     usage: /<command> <player>
-    permission: playertrust.trust
+    permission: servercore.command.trust
+  untrust:
+    description: Revokes building privileges from a player
+    usage: /<command> <player>
+    permission: servercore.command.untrust
