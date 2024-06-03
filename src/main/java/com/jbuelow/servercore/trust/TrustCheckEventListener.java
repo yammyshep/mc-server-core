@@ -10,7 +10,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.EntityDropItemEvent;
 import org.bukkit.event.entity.EntityPickupItemEvent;
 import org.bukkit.event.player.*;
 
@@ -21,7 +20,12 @@ public class TrustCheckEventListener implements Listener {
 
     private static final long WARNING_INTERVAL = 1000;
 
-    private final UserTrustService trust = ServerCore.getTrustService();
+    private final UserTrustService trust;
+
+    public TrustCheckEventListener() {
+        TrustModule module = ServerCore.get().getModule();
+        trust = module.getTrustService();
+    }
 
     private final Map<Player, Long> lastWarningTimes = new HashMap<>();
 
