@@ -1,9 +1,6 @@
 package com.jbuelow.servercore.trust;
 
 import com.jbuelow.servercore.trust.service.UserTrustService;
-import net.luckperms.api.LuckPerms;
-import net.luckperms.api.model.user.User;
-import net.luckperms.api.node.Node;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
