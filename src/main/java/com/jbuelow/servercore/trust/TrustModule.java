@@ -1,5 +1,6 @@
 package com.jbuelow.servercore.trust;
 
+import com.jbuelow.servercore.PluginModule;
 import com.jbuelow.servercore.ServerCore;
 import com.jbuelow.servercore.ServerCoreModule;
 import com.jbuelow.servercore.trust.service.UserTrustService;
@@ -10,6 +11,7 @@ import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.ServicePriority;
 import org.bukkit.plugin.java.JavaPlugin;
 
+@PluginModule(name = "trust")
 public class TrustModule implements ServerCoreModule {
 
     private final JavaPlugin plugin;
