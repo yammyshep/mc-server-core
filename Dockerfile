@@ -8,6 +8,7 @@ ADD https://api.papermc.io/v2/projects/paper/versions/1.21.3/builds/81/downloads
 
 # Install plugin dependencies
 ADD https://github.com/MilkBowl/Vault/releases/download/1.7.3/Vault.jar plugins/
+ADD https://cdn.modrinth.com/data/Vebnzrzj/versions/cfNN7sys/LuckPerms-Bukkit-5.4.145.jar plugins/
 
 RUN echo "eula=true" > eula.txt
 

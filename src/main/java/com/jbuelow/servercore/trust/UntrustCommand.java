@@ -30,7 +30,7 @@ public class UntrustCommand implements CommandExecutor {
 
         trust.setTrust(otherPlayer, false);
 
-        sender.sendMessage("Revoked trust from %user%.");
+        sender.sendMessage("Revoked trust from " + otherPlayer.getDisplayName() + ".");
         otherPlayer.sendMessage("Your server trust status has been revoked!");
         return true;
     }

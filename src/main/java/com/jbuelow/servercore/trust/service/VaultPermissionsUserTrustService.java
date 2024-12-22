@@ -5,7 +5,7 @@ import org.bukkit.entity.Player;
 
 public class VaultPermissionsUserTrustService implements UserTrustService {
 
-    private static final String TRUSTED_PERM = "servercore.trust.trusted";
+    private static final String TRUSTED_PERM = "group.trusted";
 
     private final Permission perms;
 

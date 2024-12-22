@@ -30,8 +30,8 @@ public class TrustCommand implements CommandExecutor {
 
         trust.setTrust(otherPlayer, true);
 
-        sender.sendMessage("Successfully trusted user %user%!");
-        otherPlayer.sendMessage("%user% has trusted you to the server.");
+        sender.sendMessage("Successfully trusted " + otherPlayer.getDisplayName() + "!");
+        otherPlayer.sendMessage(sender.getName() + " has trusted you to the server.");
         return true;
     }
 }
