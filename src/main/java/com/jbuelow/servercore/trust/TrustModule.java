@@ -40,6 +40,7 @@ public class TrustModule implements ServerCoreModule {
 
         plugin.getCommand("trust").setExecutor(new TrustCommand());
         plugin.getCommand("untrust").setExecutor(new UntrustCommand());
+        plugin.getCommand("notrust").setExecutor(new NotrustCommand());
     }
 
     @Override
