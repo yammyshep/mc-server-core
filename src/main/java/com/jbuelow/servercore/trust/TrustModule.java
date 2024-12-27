@@ -36,6 +36,7 @@ public class TrustModule implements ServerCoreModule {
 
 
         plugin.getServer().getPluginManager().registerEvents(new TrustCheckEventListener(), plugin);
+        plugin.getServer().getPluginManager().registerEvents(new TrustCheckChatEventListener(trustService), plugin);
 
         plugin.getCommand("trust").setExecutor(new TrustCommand());
         plugin.getCommand("untrust").setExecutor(new UntrustCommand());

@@ -2,6 +2,8 @@ package com.jbuelow.servercore.trust;
 
 import com.jbuelow.servercore.ServerCore;
 import com.jbuelow.servercore.trust.service.UserTrustService;
+import org.bukkit.Bukkit;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
@@ -18,7 +20,7 @@ import java.util.Map;
 
 public class TrustCheckEventListener implements Listener {
 
-    private static final long WARNING_INTERVAL = 1000;
+    private static final long WARNING_INTERVAL = 10000;
 
     private final UserTrustService trust;
 
@@ -39,7 +41,8 @@ public class TrustCheckEventListener implements Listener {
     }
 
     private void warnUntrustedPlayer(Player player) {
-        player.sendMessage("Hey! You can't do that until you are trusted by another user!");
+        player.playSound(player, Sound.BLOCK_NOTE_BLOCK_DIDGERIDOO, 1.5f, 1.f);
+        player.sendTitle("You can't do that yet!", "Ask another player to type /trust " + player.getDisplayName(), 10, 100, 10);
     }
 
     @EventHandler(priority = EventPriority.LOWEST)
