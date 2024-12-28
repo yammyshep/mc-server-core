@@ -3,6 +3,8 @@ FROM alpine:3.19
 # Install jre and other dependencies
 RUN apk add --no-cache openjdk21-jre
 
+WORKDIR /srv
+
 # Install paper server jar
 ADD https://api.papermc.io/v2/projects/paper/versions/1.21.3/builds/81/downloads/paper-1.21.3-81.jar paper.jar
 
