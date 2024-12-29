@@ -28,6 +28,11 @@ public class UntrustCommand implements CommandExecutor {
             return false;
         UserTrustService trust = provider.getProvider();
 
+        if (!trust.isTrusted(otherPlayer)) {
+            sender.sendMessage("Error: That player is not trusted. Cannot untrust!");
+            return true;
+        }
+
         trust.setTrust(otherPlayer, false);
 
         sender.sendMessage("Revoked trust from " + otherPlayer.getDisplayName() + ".");

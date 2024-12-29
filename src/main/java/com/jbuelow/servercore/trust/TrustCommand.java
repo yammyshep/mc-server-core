@@ -28,6 +28,11 @@ public class TrustCommand implements CommandExecutor {
             return false;
         UserTrustService trust = provider.getProvider();
 
+        if (trust.isTrusted(otherPlayer)) {
+            sender.sendMessage("Error: Player is already trusted!");
+            return true;
+        }
+
         trust.setTrust(otherPlayer, true);
 
         sender.sendMessage("Successfully trusted " + otherPlayer.getDisplayName() + "!");

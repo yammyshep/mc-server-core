@@ -1,7 +1,6 @@
 package com.jbuelow.servercore.trust;
 
 import com.jbuelow.servercore.PluginModule;
-import com.jbuelow.servercore.ServerCore;
 import com.jbuelow.servercore.ServerCoreModule;
 import com.jbuelow.servercore.trust.service.UserTrustService;
 import com.jbuelow.servercore.trust.service.VaultPermissionsUserTrustService;
@@ -37,6 +36,7 @@ public class TrustModule implements ServerCoreModule {
 
         plugin.getServer().getPluginManager().registerEvents(new TrustCheckEventListener(), plugin);
         plugin.getServer().getPluginManager().registerEvents(new TrustCheckChatEventListener(trustService), plugin);
+        plugin.getServer().getPluginManager().registerEvents(new TrustPlayerJoinEventListener(trustService), plugin);
 
         plugin.getCommand("trust").setExecutor(new TrustCommand());
         plugin.getCommand("untrust").setExecutor(new UntrustCommand());
