@@ -13,6 +13,9 @@ ADD https://github.com/MilkBowl/Vault/releases/download/1.7.3/Vault.jar plugins/
 ADD https://cdn.modrinth.com/data/Vebnzrzj/versions/cfNN7sys/LuckPerms-Bukkit-5.4.145.jar plugins/
 
 RUN echo "eula=true" > eula.txt
+RUN echo -e "server.basic:\n  default: true\n  children:\n    minecraft.command.op: true\n    luckperms.*: true" > permissions.yml
+
+RUN java -jar paper.jar --initSettings
 
 # Install built plugin jar
 COPY target/servercore*.jar plugins/
