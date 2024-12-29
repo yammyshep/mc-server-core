@@ -17,12 +17,13 @@ import org.bukkit.potion.PotionEffectType;
 
 public class BalloonEventListener implements Listener {
 
+    private static final BalloonItem balloonItem = new BalloonItem();
     private boolean isBalloon(ItemStack itemStack) {
         if (itemStack == null) {
             return false;
         }
 
-        return itemStack.getType() == Material.PUFFERFISH;
+        return balloonItem.isItem(itemStack);
     }
 
     private void updatePlayerBalloonState(Player player) {

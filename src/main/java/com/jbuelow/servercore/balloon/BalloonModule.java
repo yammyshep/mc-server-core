@@ -1,7 +1,6 @@
 package com.jbuelow.servercore.balloon;
 
 import com.jbuelow.servercore.PluginModule;
-import com.jbuelow.servercore.ServerCore;
 import com.jbuelow.servercore.ServerCoreModule;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -17,6 +16,9 @@ public class BalloonModule implements ServerCoreModule {
     @Override
     public void onEnable() {
         plugin.getServer().getPluginManager().registerEvents(new BalloonEventListener(), plugin);
+
+        BalloonItem balloonItem = new BalloonItem();
+        plugin.getServer().addRecipe(balloonItem.getRecipe());
     }
 
     @Override
