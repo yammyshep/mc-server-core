@@ -46,22 +46,25 @@ public final class ServerCore extends JavaPlugin {
         for (Class<?> clazz : classes) {
             PluginModule anno = clazz.getAnnotation(PluginModule.class);
 
-            if (config.getSection("modules").getBoolean(anno.name())) {
-                try {
-                    Object modObject = clazz.getConstructor(JavaPlugin.class).newInstance(this);
-                    if (modObject instanceof ServerCoreModule) {
-                        modules.add((ServerCoreModule) modObject);
-                        log.info("Loaded plugin module '" + anno.name() + "' with class: " + clazz.getName());
-                    } else {
-                        log.severe("Failed to initialize plugin module: " + clazz.getCanonicalName());
-                    }
-                } catch (InstantiationException | IllegalAccessException | InvocationTargetException |
-                         NoSuchMethodException e) {
-                    log.severe("Failed to initialize plugin module: " + clazz.getCanonicalName());
-                    e.printStackTrace();
+            if (anno.enableByConfig()) {
+                if (!config.getSection("modules").getBoolean(anno.name())) {
+                    log.warning("Skipping module '" + anno.name() + "' as it is disabled in plugin configuration");
+                    continue;
                 }
-            } else {
-                log.warning("Skipping module '" + anno.name() + "' as it is disabled in plugin configuration");
+            }
+
+            try {
+                Object modObject = clazz.getConstructor(ServerCore.class).newInstance(this);
+                if (modObject instanceof ServerCoreModule) {
+                    modules.add((ServerCoreModule) modObject);
+                    log.info("Loaded plugin module '" + anno.name() + "' with class: " + clazz.getName());
+                } else {
+                    log.severe("Failed to initialize plugin module: " + clazz.getCanonicalName());
+                }
+            } catch (InstantiationException | IllegalAccessException | InvocationTargetException |
+                     NoSuchMethodException e) {
+                log.severe("Failed to initialize plugin module: " + clazz.getCanonicalName());
+                e.printStackTrace();
             }
         }
 
@@ -80,12 +83,13 @@ public final class ServerCore extends JavaPlugin {
         }
     }
 
-    public <T extends ServerCoreModule> T getModule() {
+    public <T extends ServerCoreModule> T getModule(Class<T> moduleClass) {
         for (ServerCoreModule module : modules) {
-            try {
-                return (T) module;
-            } catch (ClassCastException ignored) {}
+            if (moduleClass.isAssignableFrom(module.getClass())) {
+                return moduleClass.cast(module);
+            }
         }
+
         return null;
     }
 

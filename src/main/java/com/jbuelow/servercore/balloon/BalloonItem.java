@@ -1,35 +1,41 @@
 package com.jbuelow.servercore.balloon;
 
 import com.jbuelow.servercore.ServerCore;
-import org.bukkit.ChatColor;
+import com.jbuelow.servercore.item.ItemRecipe;
+import com.jbuelow.servercore.item.CustomItem;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
-import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.Recipe;
 import org.bukkit.inventory.ShapedRecipe;
-import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.persistence.PersistentDataContainer;
-import org.bukkit.persistence.PersistentDataType;
 
-public class BalloonItem {
+import java.util.List;
 
-    public ItemStack getItemStack() {
-        ItemStack item = new ItemStack(Material.PUFFERFISH);
-
-        ItemMeta meta = item.getItemMeta();
-        meta.setDisplayName(ChatColor.RESET + "Pufferfish Balloon");
-
-        NamespacedKey balloonKey = new NamespacedKey(ServerCore.get(), "is_balloon");
-        meta.getPersistentDataContainer().set(balloonKey, PersistentDataType.BOOLEAN, true);
-
-        item.setItemMeta(meta);
-        return item;
+public class BalloonItem extends CustomItem implements ItemRecipe {
+    public BalloonItem() {
+        this(1);
     }
 
-    public ShapedRecipe getRecipe() {
-        ItemStack item = getItemStack();
-        NamespacedKey key = new NamespacedKey(ServerCore.get(), "pufferfish_balloon");
+    public BalloonItem(final int amount) {
+        this(amount, (short) 0);
+    }
 
-        ShapedRecipe recipe = new ShapedRecipe(key, item);
+    public BalloonItem(final int amount, final short damage) {
+        super(Material.PUFFERFISH, amount, damage);
+    }
+
+    @Override
+    public String getInternalItemKey() {
+        return "pufferfish_balloon";
+    }
+
+    @Override
+    public String getName() {
+        return "Pufferfish Balloon";
+    }
+
+    @Override
+    public List<Recipe> getRecipes() {
+        ShapedRecipe recipe = new ShapedRecipe(new NamespacedKey(ServerCore.get(), "pufferfish_balloon_recipe"), this);
         recipe.shape(
                 " P ",
                 " S ",
@@ -37,19 +43,6 @@ public class BalloonItem {
         recipe.setIngredient('P', Material.PUFFERFISH);
         recipe.setIngredient('S', Material.STRING);
 
-        return recipe;
-    }
-
-    public boolean isItem(ItemStack itemStack) {
-        ItemStack thisItem = getItemStack();
-        if (!thisItem.isSimilar(itemStack))
-            return false;
-
-        PersistentDataContainer data = itemStack.getItemMeta().getPersistentDataContainer();
-        if (data.has(new NamespacedKey(ServerCore.get(), "is_balloon"), PersistentDataType.BOOLEAN)) {
-            return data.get(new NamespacedKey(ServerCore.get(), "is_balloon"), PersistentDataType.BOOLEAN);
-        }
-
-        return false;
+        return List.of(recipe);
     }
 }

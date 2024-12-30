@@ -25,7 +25,7 @@ public class TrustCheckEventListener implements Listener {
     private final UserTrustService trust;
 
     public TrustCheckEventListener() {
-        TrustModule module = ServerCore.get().getModule();
+        TrustModule module = ServerCore.get().getModule(TrustModule.class);
         trust = module.getTrustService();
     }
 

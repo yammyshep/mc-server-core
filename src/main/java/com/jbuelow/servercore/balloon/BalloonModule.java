@@ -1,15 +1,15 @@
 package com.jbuelow.servercore.balloon;
 
 import com.jbuelow.servercore.PluginModule;
+import com.jbuelow.servercore.ServerCore;
 import com.jbuelow.servercore.ServerCoreModule;
-import org.bukkit.plugin.java.JavaPlugin;
+import com.jbuelow.servercore.item.CustomItemsModule;
 
 @PluginModule(name = "balloon")
 public class BalloonModule implements ServerCoreModule {
+    private final ServerCore plugin;
 
-    private final JavaPlugin plugin;
-
-    public BalloonModule(JavaPlugin plugin) {
+    public BalloonModule(ServerCore plugin) {
         this.plugin = plugin;
     }
 
@@ -17,8 +17,14 @@ public class BalloonModule implements ServerCoreModule {
     public void onEnable() {
         plugin.getServer().getPluginManager().registerEvents(new BalloonEventListener(), plugin);
 
-        BalloonItem balloonItem = new BalloonItem();
-        plugin.getServer().addRecipe(balloonItem.getRecipe());
+        CustomItemsModule itemsModule = plugin.getModule(CustomItemsModule.class);
+        if (itemsModule == null) {
+            throw new RuntimeException("BalloonModule depends on CustomItemsModule!");
+        }
+
+        BalloonItem item = new BalloonItem();
+        itemsModule.registerCustomItem(item);
+        itemsModule.registerItemRecipes(item);
     }
 
     @Override
