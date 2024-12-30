@@ -3,16 +3,21 @@ package com.jbuelow.servercore.item;
 import com.jbuelow.servercore.PluginModule;
 import com.jbuelow.servercore.ServerCore;
 import com.jbuelow.servercore.ServerCoreModule;
+import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.Recipe;
+import org.reflections.Reflections;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.lang.reflect.InvocationTargetException;
+import java.util.*;
+import java.util.logging.Logger;
+
+import static org.reflections.scanners.Scanners.SubTypes;
+import static org.reflections.scanners.Scanners.TypesAnnotated;
 
 @PluginModule(name = "customItems", enableByConfig = false)
 public class CustomItemsModule implements ServerCoreModule {
+    private static final Logger log = Bukkit.getLogger();
     private final ServerCore plugin;
 
     private final Map<NamespacedKey, CustomItem> customItemMap = new HashMap<>();
@@ -22,7 +27,49 @@ public class CustomItemsModule implements ServerCoreModule {
     }
 
     @Override
-    public void onEnable() { }
+    public void onEnable() {
+        Reflections reflect = new Reflections();
+
+        // Register any CustomItem classes with RegisterCustomItem annotation
+        Set<Class<?>> classes = reflect.get(SubTypes.of(TypesAnnotated.with(RegisterCustomItem.class)).asClass());
+        for (Class<?> clazz : classes) {
+            RegisterCustomItem customItemAnno = clazz.getAnnotation(RegisterCustomItem.class);
+            if (customItemAnno == null) continue;
+
+            try {
+                Object itemObject = clazz.getConstructor().newInstance();
+                if (itemObject instanceof CustomItem) {
+                    registerCustomItem((CustomItem) itemObject);
+                } else {
+                    log.severe("Failed to register custom item: " + customItemAnno.key());
+                }
+            } catch (InvocationTargetException | NoSuchMethodException | IllegalAccessException |
+                     InstantiationException e) {
+                log.severe("Failed to register custom item: " + customItemAnno.key());
+                e.printStackTrace();
+            }
+        }
+
+        // Register any custom recipes with the RegisterCustomRecipes annotation
+        classes = reflect.get(SubTypes.of(TypesAnnotated.with(RegisterCustomRecipes.class)).asClass());
+        for (Class<?> clazz : classes) {
+            RegisterCustomRecipes customRecipeAnno = clazz.getAnnotation(RegisterCustomRecipes.class);
+            if (customRecipeAnno == null) continue;
+
+            try {
+                Object recipeObject = clazz.getConstructor().newInstance();
+                if (recipeObject instanceof ItemRecipe) {
+                    registerItemRecipes((ItemRecipe) recipeObject);
+                } else {
+                    log.severe("Failed to register custom recipes class: " + clazz.getCanonicalName());
+                }
+            } catch (InvocationTargetException | NoSuchMethodException | IllegalAccessException |
+                     InstantiationException e) {
+                log.severe("Failed to register custom recipes class: " + clazz.getCanonicalName());
+                e.printStackTrace();
+            }
+        }
+    }
 
     @Override
     public void onDisable() { }
