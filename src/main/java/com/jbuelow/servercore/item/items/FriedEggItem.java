@@ -1,11 +1,15 @@
 package com.jbuelow.servercore.item.items;
 
+import com.jbuelow.servercore.ServerCore;
 import com.jbuelow.servercore.item.CustomItem;
 import com.jbuelow.servercore.item.ItemRecipe;
 import com.jbuelow.servercore.item.RegisterCustomItem;
 import com.jbuelow.servercore.item.RegisterCustomRecipes;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
+import org.bukkit.inventory.FurnaceRecipe;
 import org.bukkit.inventory.Recipe;
+import org.bukkit.inventory.SmokingRecipe;
 
 import java.util.List;
 
@@ -39,6 +43,12 @@ public class FriedEggItem extends CustomItem implements ItemRecipe {
 
     @Override
     public List<Recipe> getRecipes() {
-        return List.of();
+        FurnaceRecipe furnaceRecipe = new FurnaceRecipe(new NamespacedKey(ServerCore.get(), "fried_egg_furnace_recipe"),
+                this, Material.EGG, 0.35f, 200);
+
+        SmokingRecipe smokingRecipe = new SmokingRecipe(new NamespacedKey(ServerCore.get(), "fried_egg_smoker_recipe"),
+                this, Material.EGG, 0.35f, 100);
+
+        return List.of(furnaceRecipe, smokingRecipe);
     }
 }
