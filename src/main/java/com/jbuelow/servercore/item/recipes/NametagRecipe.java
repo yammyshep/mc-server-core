@@ -7,7 +7,7 @@ import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.Recipe;
-import org.bukkit.inventory.ShapedRecipe;
+import org.bukkit.inventory.ShapelessRecipe;
 
 import java.util.List;
 
@@ -15,17 +15,10 @@ import java.util.List;
 public final class NametagRecipe implements ItemRecipe {
     @Override
     public List<Recipe> getRecipes() {
-        ShapedRecipe recipe = new ShapedRecipe(new NamespacedKey(ServerCore.get(), "nametag_recipe"),
+        ShapelessRecipe recipe = new ShapelessRecipe(new NamespacedKey(ServerCore.get(), "nametag_recipe"),
                 new ItemStack(Material.NAME_TAG));
-        recipe.shape(
-                "  E",
-                " L ",
-                "P  "
-        );
-
-        recipe.setIngredient('E', Material.LEATHER);
-        recipe.setIngredient('L', Material.LEAD);
-        recipe.setIngredient('P', Material.PAPER);
+        recipe.addIngredient(Material.LEAD);
+        recipe.addIngredient(Material.WRITABLE_BOOK);
 
         return List.of(recipe);
     }
