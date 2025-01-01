@@ -30,6 +30,7 @@ public abstract class CustomItem extends ItemStack {
         assert meta != null;
 
         meta.setDisplayName(ChatColor.RESET + getName());
+        meta.setCustomModelData(getCustomModelData());
         meta.getPersistentDataContainer().set(customItemKey, PersistentDataType.STRING, getInternalItemKey());
 
         setItemMeta(meta);
@@ -56,4 +57,8 @@ public abstract class CustomItem extends ItemStack {
     }
 
     public abstract String getName();
+
+    public int getCustomModelData() {
+        return 0;
+    }
 }

@@ -40,9 +40,15 @@ public class BalloonItem extends CustomItem implements ItemRecipe {
                 " P ",
                 " S ",
                 " S ");
+
         recipe.setIngredient('P', Material.PUFFERFISH);
         recipe.setIngredient('S', Material.STRING);
 
         return List.of(recipe);
+    }
+
+    @Override
+    public int getCustomModelData() {
+        return 1024610;
     }
 }
