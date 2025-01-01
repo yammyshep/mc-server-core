@@ -8,6 +8,6 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
 public @interface PluginModule {
-    String name() default "";
+    String name();
     boolean enableByConfig() default true;
 }

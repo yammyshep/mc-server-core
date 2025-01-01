@@ -1,3 +1,4 @@
 modules:
   trust: true
   balloon: true
+  spectator: true
