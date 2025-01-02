@@ -52,4 +52,9 @@ public class IronThoeItem extends ThickIronToolItem implements ItemRecipe {
 
         return List.of(recipe);
     }
+
+    @Override
+    public int getCustomModelData() {
+        return 7015788;
+    }
 }

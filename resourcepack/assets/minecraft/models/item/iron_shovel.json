@@ -1,0 +1,9 @@
+{
+  "parent": "item/generated",
+  "textures": {
+    "layer0": "item/iron_shovel"
+  },
+  "overrides": [
+    {"predicate": {"custom_model_data": 9008564}, "model": "item/iron_thovel"}
+  ]
+}
