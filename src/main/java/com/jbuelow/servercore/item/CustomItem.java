@@ -7,13 +7,10 @@ import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.inventory.meta.components.CustomModelDataComponent;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 
 public abstract class CustomItem extends ItemStack {
@@ -37,16 +34,12 @@ public abstract class CustomItem extends ItemStack {
 
         meta.setDisplayName(ChatColor.RESET + getName());
 
-        if (CompatUtils.serverSupportsModelDataComponent()) {
-            CustomModelDataComponent modelData = meta.getCustomModelDataComponent();
-
-            List<String> modelStrings = new ArrayList<>(modelData.getStrings());
-            modelStrings.add(getItemKey().toString());
-            modelData.setStrings(modelStrings);
-
-            meta.setCustomModelDataComponent(modelData);
-        } else {
-            meta.setCustomModelData(getItemKey().hashCode());
+        if (hasCustomItemModel()) {
+            if (CompatUtils.serverSupportsModelDataComponent()) {
+                meta.setItemModel(getItemKey());
+            } else {
+                meta.setCustomModelData(getItemKey().hashCode());
+            }
         }
 
         setItemMeta(meta);
@@ -73,4 +66,8 @@ public abstract class CustomItem extends ItemStack {
     }
 
     public abstract String getName();
+
+    public boolean hasCustomItemModel() {
+        return false;
+    }
 }

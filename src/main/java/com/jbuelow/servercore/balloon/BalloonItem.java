@@ -46,4 +46,9 @@ public class BalloonItem extends CustomItem implements ItemRecipe {
 
         return List.of(recipe);
     }
+
+    @Override
+    public boolean hasCustomItemModel() {
+        return true;
+    }
 }

@@ -12,4 +12,9 @@ public abstract class ThickIronToolItem extends CustomItem {
         meta.setUnbreakable(true);
         setItemMeta(meta);
     }
+
+    @Override
+    public boolean hasCustomItemModel() {
+        return true;
+    }
 }

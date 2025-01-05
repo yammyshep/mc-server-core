@@ -51,4 +51,9 @@ public class FriedEggItem extends CustomItem implements ItemRecipe {
 
         return List.of(furnaceRecipe, smokingRecipe);
     }
+
+    @Override
+    public boolean hasCustomItemModel() {
+        return true;
+    }
 }
