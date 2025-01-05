@@ -25,7 +25,7 @@ public class BalloonItem extends CustomItem implements ItemRecipe {
 
     @Override
     public String getInternalItemKey() {
-        return "pufferfish_balloon";
+        return "balloon";
     }
 
     @Override
@@ -35,7 +35,7 @@ public class BalloonItem extends CustomItem implements ItemRecipe {
 
     @Override
     public List<Recipe> getRecipes() {
-        ShapedRecipe recipe = new ShapedRecipe(new NamespacedKey(ServerCore.get(), "pufferfish_balloon_recipe"), this);
+        ShapedRecipe recipe = new ShapedRecipe(new NamespacedKey(ServerCore.get(), "balloon_recipe"), this);
         recipe.shape(
                 " P ",
                 " S ",
