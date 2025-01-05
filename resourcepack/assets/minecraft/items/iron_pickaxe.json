@@ -1,0 +1,19 @@
+{
+  "model": {
+    "type": "select",
+    "property": "custom_model_data",
+    "fallback": {
+      "type": "model",
+      "model": "item/iron_pickaxe"
+    },
+    "cases": [
+      {
+        "when": "servercore:iron_thickaxe",
+        "model": {
+          "type": "model",
+          "model": "servercore:item/iron_thickaxe"
+        }
+      }
+    ]
+  }
+}

@@ -1,6 +1,6 @@
 {
     "parent": "item/generated",
     "textures": {
-        "layer0": "item/berry_pie"
+        "layer0": "servercore:item/berry_pie"
     }
 }

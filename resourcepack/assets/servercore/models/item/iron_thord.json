@@ -1,6 +1,6 @@
 {
   "parent": "item/generated",
   "textures": {
-    "layer0": "item/iron_thord"
+    "layer0": "servercore:item/iron_thord"
   }
 }
