@@ -1,15 +1,19 @@
 package com.jbuelow.servercore.item;
 
 import com.jbuelow.servercore.ServerCore;
+import com.jbuelow.servercore.util.CompatUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.components.CustomModelDataComponent;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 public abstract class CustomItem extends ItemStack {
@@ -29,9 +33,21 @@ public abstract class CustomItem extends ItemStack {
         ItemMeta meta = getItemMeta();
         assert meta != null;
 
-        meta.setDisplayName(ChatColor.RESET + getName());
-        meta.setCustomModelData(getCustomModelData());
         meta.getPersistentDataContainer().set(customItemKey, PersistentDataType.STRING, getInternalItemKey());
+
+        meta.setDisplayName(ChatColor.RESET + getName());
+
+        if (CompatUtils.serverSupportsModelDataComponent()) {
+            CustomModelDataComponent modelData = meta.getCustomModelDataComponent();
+
+            List<String> modelStrings = new ArrayList<>(modelData.getStrings());
+            modelStrings.add(getItemKey().toString());
+            modelData.setStrings(modelStrings);
+
+            meta.setCustomModelDataComponent(modelData);
+        } else {
+            meta.setCustomModelData(getItemKey().hashCode());
+        }
 
         setItemMeta(meta);
     }
@@ -57,8 +73,4 @@ public abstract class CustomItem extends ItemStack {
     }
 
     public abstract String getName();
-
-    public int getCustomModelData() {
-        return 0;
-    }
 }

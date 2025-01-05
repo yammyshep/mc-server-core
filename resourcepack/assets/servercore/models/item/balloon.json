@@ -1,6 +1,6 @@
 {
     "parent": "item/generated",
     "textures": {
-        "layer0": "item/balloon"
+        "layer0": "servercore:item/balloon"
     }
 }

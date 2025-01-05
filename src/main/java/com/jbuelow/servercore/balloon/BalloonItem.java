@@ -46,9 +46,4 @@ public class BalloonItem extends CustomItem implements ItemRecipe {
 
         return List.of(recipe);
     }
-
-    @Override
-    public int getCustomModelData() {
-        return 1024610;
-    }
 }

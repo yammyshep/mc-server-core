@@ -53,9 +53,4 @@ public class BerryPieItem extends CustomItem implements ItemRecipe {
 
         return List.of(recipe);
     }
-
-    @Override
-    public int getCustomModelData() {
-        return 5815782;
-    }
 }

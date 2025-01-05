@@ -1,0 +1,19 @@
+{
+    "model": {
+        "type": "select",
+        "property": "custom_model_data",
+        "fallback": {
+            "type": "model",
+            "model": "item/pufferfish"
+        },
+        "cases": [
+            {
+                "when": "servercore:pufferfish_balloon",
+                "model": {
+                    "type": "model",
+                    "model": "servercore:item/balloon"
+                }
+            }
+        ]
+    }
+}
