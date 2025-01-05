@@ -5,11 +5,14 @@ import com.jbuelow.servercore.item.CustomItem;
 import com.jbuelow.servercore.item.ItemRecipe;
 import com.jbuelow.servercore.item.RegisterCustomItem;
 import com.jbuelow.servercore.item.RegisterCustomRecipes;
+import com.jbuelow.servercore.util.CompatUtils;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.FurnaceRecipe;
 import org.bukkit.inventory.Recipe;
 import org.bukkit.inventory.SmokingRecipe;
+import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.components.FoodComponent;
 
 import java.util.List;
 
@@ -25,10 +28,19 @@ public class FriedEggItem extends CustomItem implements ItemRecipe {
     }
 
     public FriedEggItem(final int amount, final short damage) {
-        //TODO: Update Spigot api to utilize components to change nutrition and saturation values
-        // low nutrition, high saturation
-        // https://hub.spigotmc.org/jira/browse/SPIGOT-7984
         super(Material.BAKED_POTATO, amount, damage);
+
+        ItemMeta meta = getItemMeta();
+        assert (meta != null);
+
+        if (CompatUtils.serverSupportsDataComponents()) {
+            FoodComponent food = meta.getFood();
+            food.setNutrition(3);
+            food.setSaturation(7.2f);
+            meta.setFood(food);
+        }
+
+        setItemMeta(meta);
     }
 
     @Override
