@@ -37,8 +37,6 @@ public abstract class CustomItem extends ItemStack {
     }
 
     public boolean isItem(ItemStack itemStack) {
-        if (!isSimilar(itemStack)) return false;
-
         ItemMeta meta = itemStack.getItemMeta();
         if (meta == null) return false;
 
@@ -60,5 +58,9 @@ public abstract class CustomItem extends ItemStack {
 
     public int getCustomModelData() {
         return 0;
+    }
+
+    public boolean preventEnchanting() {
+        return false;
     }
 }

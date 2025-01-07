@@ -5,6 +5,7 @@ import com.jbuelow.servercore.ServerCore;
 import com.jbuelow.servercore.ServerCoreModule;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.Recipe;
 import org.reflections.Reflections;
 
@@ -28,6 +29,8 @@ public class CustomItemsModule implements ServerCoreModule {
 
     @Override
     public void onEnable() {
+        plugin.getServer().getPluginManager().registerEvents(new CustomItemEnchantmentEventListener(this), plugin);
+
         Reflections reflect = new Reflections();
 
         // Register any CustomItem classes with RegisterCustomItem annotation
@@ -106,6 +109,19 @@ public class CustomItemsModule implements ServerCoreModule {
         for (CustomItem item : customItemMap.values()) {
             if (customItemClass.isAssignableFrom(item.getClass())) {
                 return Optional.of(item);
+            }
+        }
+
+        return Optional.empty();
+    }
+
+    public Optional<CustomItem> getItem(ItemStack item) {
+        for (CustomItem customItem : customItemMap.values()) {
+            if (customItem.isItem(item)) {
+                try {
+                    return Optional.of(customItem.getClass().getConstructor(int.class).newInstance(item.getAmount()));
+                } catch (NoSuchMethodException | InvocationTargetException | InstantiationException |
+                         IllegalAccessException ignored) { }
             }
         }
 
