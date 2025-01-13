@@ -1,12 +1,14 @@
 FROM alpine:3.19
 
 # Install jre and other dependencies
-RUN apk add --no-cache openjdk21-jre
+ARG JAVA_VERSION=21
+RUN apk add --no-cache openjdk${JAVA_VERSION}-jre
 
 WORKDIR /srv
 
 # Install paper server jar
-ADD https://api.papermc.io/v2/projects/paper/versions/1.21.4/builds/76/downloads/paper-1.21.4-76.jar paper.jar
+ARG PAPER_VERSION=1.21.4
+ADD https://mcutils.com/api/server-jars/paper/${PAPER_VERSION}/download paper.jar
 
 # Install plugin dependencies
 ADD https://github.com/MilkBowl/Vault/releases/download/1.7.3/Vault.jar plugins/

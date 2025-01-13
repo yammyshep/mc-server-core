@@ -11,6 +11,10 @@ public class CompatUtils {
         return serverIsAtLeastVersion("1.20.5");
     }
 
+    public static boolean serverSupportsInfinitePotionDuration() {
+        return serverIsAtLeastVersion("1.19.4");
+    }
+
     public static boolean serverIsAtLeastVersion(String version) {
         String[] givenSplit = version.split("\\.");
         if (givenSplit.length < 2) return false;

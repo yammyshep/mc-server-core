@@ -1,6 +1,7 @@
 package com.jbuelow.servercore.balloon;
 
 import com.jbuelow.servercore.ServerCore;
+import com.jbuelow.servercore.util.CompatUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -15,6 +16,16 @@ import org.bukkit.potion.PotionEffectType;
 
 public class BalloonEventListener implements Listener {
     private static final BalloonItem balloonItem = new BalloonItem();
+    private final int DURATION_INFINITE;
+
+    public BalloonEventListener() {
+        // MC Versions prior to 1.19.4 do not support infinite potion effect durations, and so integer limit is used instead
+        if (CompatUtils.serverSupportsInfinitePotionDuration()) {
+            DURATION_INFINITE = -1;
+        } else {
+            DURATION_INFINITE = Integer.MAX_VALUE;
+        }
+    }
 
     private boolean isBalloon(ItemStack itemStack) {
         if (itemStack == null) {
@@ -38,7 +49,7 @@ public class BalloonEventListener implements Listener {
     //TODO: Don't rely on potion effects! Creates ability to remove the LEVITATION potion effect using the balloon item!
     // also grants the "Great view from up here" challange prematurely
     private void startBalloon(Player player) {
-        player.addPotionEffect(new PotionEffect(PotionEffectType.LEVITATION, -1, 1, true));
+        player.addPotionEffect(new PotionEffect(PotionEffectType.LEVITATION, DURATION_INFINITE, 1, true));
     }
 
     private void endBalloon(Player player) {
