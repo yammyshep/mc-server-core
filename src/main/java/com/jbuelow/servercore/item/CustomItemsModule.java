@@ -5,6 +5,7 @@ import com.jbuelow.servercore.ServerCore;
 import com.jbuelow.servercore.ServerCoreModule;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
+import org.bukkit.event.Listener;
 import org.bukkit.inventory.Recipe;
 import org.reflections.Reflections;
 
@@ -89,6 +90,10 @@ public class CustomItemsModule implements ServerCoreModule {
     public void registerCustomItem(CustomItem item) {
         if (!customItemMap.containsKey(item.getItemKey())) {
             customItemMap.put(item.getItemKey(), item);
+
+            if (item instanceof Listener) {
+                plugin.getServer().getPluginManager().registerEvents((Listener) item, plugin);
+            }
         }
     }
 
