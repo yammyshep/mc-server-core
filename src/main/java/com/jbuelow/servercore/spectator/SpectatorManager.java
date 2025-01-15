@@ -2,6 +2,7 @@ package com.jbuelow.servercore.spectator;
 
 import com.jbuelow.servercore.ServerCore;
 import org.bukkit.GameMode;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Entity;
@@ -10,9 +11,13 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class SpectatorManager {
     private final NamespacedKey stateKey;
     private final static SpectatorStateDataType stateType = new SpectatorStateDataType();
+    private final Map<Player, Location> cachedReturnLocations = new HashMap<>();
 
     public SpectatorManager() {
         this.stateKey = new NamespacedKey(ServerCore.get(), "spectator_state");
@@ -54,5 +59,22 @@ public class SpectatorManager {
         state.applyStateToPlayer(player);
 
         player.getPersistentDataContainer().remove(stateKey);
+        cachedReturnLocations.remove(player);
+    }
+
+    public boolean isPlayerSpectating(Player player) {
+        return player.getGameMode() == GameMode.SPECTATOR && hasSpectatorStateInfo(player);
+    }
+
+    public Location getReturnLocation(Player player) {
+        return cachedReturnLocations.computeIfAbsent(player, p -> {
+            if (!isPlayerSpectating(player)) {
+                return null;
+            }
+
+            SpectatorState state = player.getPersistentDataContainer().get(stateKey, stateType);
+            if (state == null) return null;
+            return state.getLocation();
+        });
     }
 }

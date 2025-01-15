@@ -20,6 +20,7 @@ public class SpectatorState implements Serializable {
     private final int freezeTicks;
     private final int fireTicks;
     private final int noDamageTicks;
+    private final boolean isFlying;
 
     public SpectatorState(Player player) {
         serializedLocation = player.getLocation().serialize();
@@ -29,6 +30,7 @@ public class SpectatorState implements Serializable {
         fireTicks = player.getFireTicks();
         freezeTicks = player.getFreezeTicks();
         noDamageTicks = player.getNoDamageTicks();
+        isFlying = player.isFlying();
 
         serializedPotionEffects.clear();
         for (PotionEffect effect : player.getActivePotionEffects()) {
@@ -44,6 +46,7 @@ public class SpectatorState implements Serializable {
         player.setFireTicks(getFireTicks());
         player.setFreezeTicks(getFreezeTicks());
         player.setNoDamageTicks(getNoDamageTicks());
+        player.setFlying(getIsFlying());
 
         for (PotionEffect effect : player.getActivePotionEffects()) {
             player.removePotionEffect(effect.getType());
@@ -86,5 +89,9 @@ public class SpectatorState implements Serializable {
 
     public int getNoDamageTicks() {
         return noDamageTicks;
+    }
+
+    public boolean getIsFlying() {
+        return isFlying;
     }
 }

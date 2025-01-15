@@ -20,10 +20,15 @@ public class SpectatorModule implements ServerCoreModule {
     public void onEnable() {
         CommandMap commandMap = SpigotReflectionHelpers.getCommandMap();
         commandMap.register("servercore", new SpectatorToggleCommand(manager));
+        plugin.getServer().getPluginManager().registerEvents(new SpectatorEventListener(this), plugin);
     }
 
     @Override
     public void onDisable() {
 
+    }
+
+    public SpectatorManager getManager() {
+        return manager;
     }
 }
