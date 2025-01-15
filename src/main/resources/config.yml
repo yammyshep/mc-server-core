@@ -6,3 +6,4 @@ modules:
 spectator:
   prevent-void-damage: true
   max-distance: INFINITE
+  show-visual: true

@@ -23,7 +23,9 @@ public class SpectatorModule implements ServerCoreModule {
         commandMap.register("servercore", new SpectatorToggleCommand(manager));
         plugin.getServer().getPluginManager().registerEvents(new SpectatorEventListener(this), plugin);
 
-        new SpectatorVisualizerRunnable(this).runTaskTimer(plugin, 5L, 5L);
+        if (plugin.getConfiguration().getBoolean("spectator.show-visual", true)) {
+            new SpectatorVisualizerRunnable(this).runTaskTimer(plugin, 5L, 5L);
+        }
     }
 
     @Override
