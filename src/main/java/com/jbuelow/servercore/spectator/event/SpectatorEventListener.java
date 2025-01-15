@@ -1,5 +1,7 @@
-package com.jbuelow.servercore.spectator;
+package com.jbuelow.servercore.spectator.event;
 
+import com.jbuelow.servercore.spectator.SpectatorManager;
+import com.jbuelow.servercore.spectator.SpectatorModule;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;

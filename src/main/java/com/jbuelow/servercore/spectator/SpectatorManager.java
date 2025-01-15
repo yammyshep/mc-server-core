@@ -1,10 +1,9 @@
 package com.jbuelow.servercore.spectator;
 
 import com.jbuelow.servercore.ServerCore;
-import org.bukkit.GameMode;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
+import com.jbuelow.servercore.spectator.event.PlayerEnterSpectatorModeEvent;
+import com.jbuelow.servercore.spectator.event.PlayerExitSpectatorModeEvent;
+import org.bukkit.*;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -25,6 +24,13 @@ public class SpectatorManager {
 
     public void enterSpectatorMode(Player player) {
         SpectatorState spectatorState = new SpectatorState(player);
+
+        // Emit event and stop if cancelled
+        PlayerEnterSpectatorModeEvent event = new PlayerEnterSpectatorModeEvent(player);
+        Bukkit.getPluginManager().callEvent(event);
+        if (event.isCancelled()) {
+            return;
+        }
 
         for (PotionEffect effect : player.getActivePotionEffects()) {
             player.removePotionEffect(effect.getType());
@@ -53,6 +59,12 @@ public class SpectatorManager {
 
     public void exitSpectatorMode(Player player) {
         if (!hasSpectatorStateInfo(player)) return;
+
+        PlayerExitSpectatorModeEvent event = new PlayerExitSpectatorModeEvent(player);
+        Bukkit.getPluginManager().callEvent(event);
+        if (event.isCancelled()) {
+            return;
+        }
 
         SpectatorState state = player.getPersistentDataContainer().get(stateKey, stateType);
         if (state == null) return;

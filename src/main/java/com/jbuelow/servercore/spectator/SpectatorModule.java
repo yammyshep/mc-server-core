@@ -3,6 +3,7 @@ package com.jbuelow.servercore.spectator;
 import com.jbuelow.servercore.PluginModule;
 import com.jbuelow.servercore.ServerCore;
 import com.jbuelow.servercore.ServerCoreModule;
+import com.jbuelow.servercore.spectator.event.SpectatorEventListener;
 import com.jbuelow.servercore.util.SpigotReflectionHelpers;
 import org.bukkit.command.CommandMap;
 
