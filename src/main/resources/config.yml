@@ -2,3 +2,7 @@ modules:
   trust: true
   balloon: true
   spectator: true
+
+spectator:
+  prevent-void-damage: true
+  max-distance: INFINITE
