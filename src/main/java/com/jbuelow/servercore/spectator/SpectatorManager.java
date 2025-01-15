@@ -15,14 +15,11 @@ public class SpectatorManager {
     }
 
     public void enterSpectatorMode(Player player) {
-        SpectatorState spectatorState = new SpectatorState(player.getLocation(), player.getGameMode());
+        SpectatorState spectatorState = new SpectatorState(player);
 
-        spectatorState.setPotionEffects(player.getActivePotionEffects());
         for (PotionEffect effect : player.getActivePotionEffects()) {
             player.removePotionEffect(effect.getType());
         }
-
-        spectatorState.setFallDistance(player.getFallDistance());
 
         player.getPersistentDataContainer().set(stateKey, stateType, spectatorState);
         player.setGameMode(GameMode.SPECTATOR);
@@ -36,10 +33,8 @@ public class SpectatorManager {
         if (!hasSpectatorStateInfo(player)) return;
 
         SpectatorState state = player.getPersistentDataContainer().get(stateKey, stateType);
-        player.setGameMode(state.getGameMode());
-        player.teleport(state.getLocation());
-        player.addPotionEffects(state.getPotionEffects());
-        player.setFallDistance(state.getFallDistance());
+        assert state != null;
+        state.applyStateToPlayer(player);
 
         player.getPersistentDataContainer().remove(stateKey);
     }

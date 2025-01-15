@@ -2,6 +2,7 @@ package com.jbuelow.servercore.spectator;
 
 import org.bukkit.GameMode;
 import org.bukkit.Location;
+import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 
 import java.io.Serializable;
@@ -11,14 +12,36 @@ import java.util.List;
 import java.util.Map;
 
 public class SpectatorState implements Serializable {
-    private Map<String, Object> serializedLocation;
-    private GameMode gameMode;
+    private final Map<String, Object> serializedLocation;
+    private final GameMode gameMode;
     private final List<Map<String, Object>> serializedPotionEffects = new ArrayList<>();
-    private float fallDistance;
+    private final float fallDistance;
+    private final int remainingAir;
+    private final int freezeTicks;
+    private final int fireTicks;
 
-    public SpectatorState(Location location, GameMode gameMode) {
-        serializedLocation = location.serialize();
-        this.gameMode = gameMode;
+    public SpectatorState(Player player) {
+        serializedLocation = player.getLocation().serialize();
+        gameMode = player.getGameMode();
+        fallDistance = player.getFallDistance();
+        remainingAir = player.getRemainingAir();
+        fireTicks = player.getFireTicks();
+        freezeTicks = player.getFreezeTicks();
+
+        serializedPotionEffects.clear();
+        for (PotionEffect effect : player.getActivePotionEffects()) {
+            serializedPotionEffects.add(effect.serialize());
+        }
+    }
+
+    public void applyStateToPlayer(Player player) {
+        player.teleport(getLocation());
+        player.setGameMode(getGameMode());
+        player.setFallDistance(getFallDistance());
+        player.setRemainingAir(getRemainingAir());
+        player.addPotionEffects(getPotionEffects());
+        player.setFireTicks(getFireTicks());
+        player.setFreezeTicks(getFreezeTicks());
     }
 
     public Location getLocation() {
@@ -29,13 +52,6 @@ public class SpectatorState implements Serializable {
         return gameMode;
     }
 
-    public void setPotionEffects(Collection<PotionEffect> effects) {
-        serializedPotionEffects.clear();
-        for (PotionEffect effect : effects) {
-            serializedPotionEffects.add(effect.serialize());
-        }
-    }
-
     public Collection<PotionEffect> getPotionEffects() {
         Collection<PotionEffect> effects = new ArrayList<>();
         for (Map<String, Object> serializedEffect : serializedPotionEffects) {
@@ -44,15 +60,19 @@ public class SpectatorState implements Serializable {
         return effects;
     }
 
-    public void setFallDistance(float fallDistance) {
-        this.fallDistance = fallDistance;
-    }
-
     public float getFallDistance() {
         return fallDistance;
     }
 
-    //TODO: Handle drowning
-    //TODO: Handle freezing
-    //TODO: Handle burning
+    public int getRemainingAir() {
+        return remainingAir;
+    }
+
+    private int getFireTicks() {
+        return fireTicks;
+    }
+
+    public int getFreezeTicks() {
+        return freezeTicks;
+    }
 }
