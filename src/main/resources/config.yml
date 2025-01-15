@@ -2,3 +2,9 @@ modules:
   trust: true
   balloon: true
   crops: true
+  spectator: true
+
+spectator:
+  prevent-void-damage: true
+  max-distance: INFINITE
+  show-visual: true

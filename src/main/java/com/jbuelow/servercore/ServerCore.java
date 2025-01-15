@@ -93,6 +93,10 @@ public final class ServerCore extends JavaPlugin {
         return null;
     }
 
+    public YamlDocument getConfiguration() {
+        return config;
+    }
+
     public static ServerCore get() {
         return instance;
     }
