@@ -30,14 +30,13 @@ public abstract class CustomItem extends ItemStack {
         assert meta != null;
 
         meta.setDisplayName(ChatColor.RESET + getName());
+        meta.setCustomModelData(getCustomModelData());
         meta.getPersistentDataContainer().set(customItemKey, PersistentDataType.STRING, getInternalItemKey());
 
         setItemMeta(meta);
     }
 
     public boolean isItem(ItemStack itemStack) {
-        if (!isSimilar(itemStack)) return false;
-
         ItemMeta meta = itemStack.getItemMeta();
         if (meta == null) return false;
 
@@ -56,4 +55,12 @@ public abstract class CustomItem extends ItemStack {
     }
 
     public abstract String getName();
+
+    public int getCustomModelData() {
+        return 0;
+    }
+
+    public boolean preventEnchanting() {
+        return false;
+    }
 }

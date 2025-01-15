@@ -1,0 +1,9 @@
+{
+  "parent": "item/generated",
+  "textures": {
+    "layer0": "item/iron_axe"
+  },
+  "overrides": [
+    {"predicate": {"custom_model_data": 2504039}, "model": "item/iron_thaxe"}
+  ]
+}

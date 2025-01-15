@@ -1,6 +1,7 @@
 modules:
   trust: true
   balloon: true
+  crops: true
   spectator: true
 
 spectator:

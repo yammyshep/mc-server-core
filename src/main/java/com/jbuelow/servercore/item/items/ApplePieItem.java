@@ -53,4 +53,9 @@ public class ApplePieItem extends CustomItem implements ItemRecipe {
 
         return List.of(recipe);
     }
+
+    @Override
+    public int getCustomModelData() {
+        return 3068330;
+    }
 }
