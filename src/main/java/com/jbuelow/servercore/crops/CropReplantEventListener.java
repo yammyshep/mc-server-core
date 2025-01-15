@@ -3,6 +3,8 @@ package com.jbuelow.servercore.crops;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.Ageable;
+import org.bukkit.block.data.BlockData;
+import org.bukkit.block.data.Directional;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -23,6 +25,7 @@ public class CropReplantEventListener implements Listener {
             case POTATO -> Material.POTATOES;
             case COCOA_BEANS -> Material.COCOA;
             case NETHER_WART -> Material.NETHER_WART_BLOCK;
+            case TORCHFLOWER_SEEDS -> Material.TORCHFLOWER_CROP;
             case PITCHER_POD -> Material.PITCHER_PLANT;
             default -> null;
         };
@@ -41,19 +44,32 @@ public class CropReplantEventListener implements Listener {
 
         // Block is not a crop
         Block cropBlock = event.getClickedBlock();
-        if (!(cropBlock.getBlockData() instanceof Ageable ageableBlock)) {
-            return;
-        }
+        BlockData currBlockData = cropBlock.getBlockData();
+        if (cropBlock.getType() != Material.TORCHFLOWER) {
+            // TORCHFLOWER_CROP is used for a growing torchflower, while TORCHFLOWER is used once fully grown, which is not ageable
+            if (!(currBlockData instanceof Ageable ageableBlock)) {
+                return;
+            }
 
-        // Crop is not fully grown
-        if (ageableBlock.getAge() < ageableBlock.getMaximumAge()) {
-            return;
+            // Crop is not fully grown
+            if (ageableBlock.getAge() < ageableBlock.getMaximumAge()) {
+                return;
+            }
         }
 
         if (cropBlock.breakNaturally()) {
             cropBlock.setType(cropType);
-            ageableBlock.setAge(0);
-            cropBlock.setBlockData(ageableBlock);
+
+            BlockData newBlockData = cropBlock.getBlockData();
+            if (newBlockData instanceof Ageable newAge) {
+                newAge.setAge(0);
+            }
+
+            if ((newBlockData instanceof Directional newDir) && (currBlockData instanceof Directional oldDir)) {
+                newDir.setFacing(oldDir.getFacing());
+            }
+
+            cropBlock.setBlockData(newBlockData);
         }
     }
 }
