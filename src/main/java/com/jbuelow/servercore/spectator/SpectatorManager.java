@@ -4,6 +4,7 @@ import com.jbuelow.servercore.ServerCore;
 import org.bukkit.GameMode;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
+import org.bukkit.potion.PotionEffect;
 
 public class SpectatorManager {
     private final NamespacedKey stateKey;
@@ -15,6 +16,14 @@ public class SpectatorManager {
 
     public void enterSpectatorMode(Player player) {
         SpectatorState spectatorState = new SpectatorState(player.getLocation(), player.getGameMode());
+
+        spectatorState.setPotionEffects(player.getActivePotionEffects());
+        for (PotionEffect effect : player.getActivePotionEffects()) {
+            player.removePotionEffect(effect.getType());
+        }
+
+        spectatorState.setFallDistance(player.getFallDistance());
+
         player.getPersistentDataContainer().set(stateKey, stateType, spectatorState);
         player.setGameMode(GameMode.SPECTATOR);
     }
@@ -27,8 +36,10 @@ public class SpectatorManager {
         if (!hasSpectatorStateInfo(player)) return;
 
         SpectatorState state = player.getPersistentDataContainer().get(stateKey, stateType);
-        player.setGameMode(state.getReturnGamemode());
-        player.teleport(state.getReturnLocation());
+        player.setGameMode(state.getGameMode());
+        player.teleport(state.getLocation());
+        player.addPotionEffects(state.getPotionEffects());
+        player.setFallDistance(state.getFallDistance());
 
         player.getPersistentDataContainer().remove(stateKey);
     }
