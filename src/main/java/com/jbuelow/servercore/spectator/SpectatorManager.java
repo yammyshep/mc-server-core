@@ -2,8 +2,12 @@ package com.jbuelow.servercore.spectator;
 
 import com.jbuelow.servercore.ServerCore;
 import org.bukkit.GameMode;
+import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 
 public class SpectatorManager {
@@ -21,6 +25,19 @@ public class SpectatorManager {
             player.removePotionEffect(effect.getType());
         }
 
+        // Unleash any entities leashed by player and drop a lead
+        for (Entity entity : player.getWorld().getEntities()) {
+            if (!(entity instanceof LivingEntity)) {
+                continue;
+            }
+
+            LivingEntity livingEntity = (LivingEntity) entity;
+            if (livingEntity.isLeashed() && livingEntity.getLeashHolder() == player) {
+                livingEntity.setLeashHolder(null);
+                player.getWorld().dropItemNaturally(livingEntity.getLocation(), new ItemStack(Material.LEAD, 1));
+            }
+        }
+
         player.getPersistentDataContainer().set(stateKey, stateType, spectatorState);
         player.setGameMode(GameMode.SPECTATOR);
     }
@@ -33,7 +50,7 @@ public class SpectatorManager {
         if (!hasSpectatorStateInfo(player)) return;
 
         SpectatorState state = player.getPersistentDataContainer().get(stateKey, stateType);
-        assert state != null;
+        if (state == null) return;
         state.applyStateToPlayer(player);
 
         player.getPersistentDataContainer().remove(stateKey);
