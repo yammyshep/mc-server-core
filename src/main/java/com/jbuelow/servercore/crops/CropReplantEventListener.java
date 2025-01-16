@@ -24,10 +24,33 @@ public class CropReplantEventListener implements Listener {
             case CARROT -> Material.CARROTS;
             case POTATO -> Material.POTATOES;
             case COCOA_BEANS -> Material.COCOA;
-            case NETHER_WART -> Material.NETHER_WART_BLOCK;
+            case NETHER_WART -> Material.NETHER_WART;
             case TORCHFLOWER_SEEDS -> Material.TORCHFLOWER_CROP;
             case PITCHER_POD -> Material.PITCHER_PLANT;
             default -> null;
+        };
+    }
+
+    private static boolean isReplantAllowed(Material seed, Material crop) {
+        return switch (crop) {
+            case WHEAT:
+            case BEETROOT:
+            case CARROTS:
+            case POTATOES:
+            case TORCHFLOWER:
+            case TORCHFLOWER_CROP:
+            case PITCHER_PLANT:
+                yield switch (seed) {
+                    // Allow single block farmland crops to be replanted interchangeably
+                    case WHEAT_SEEDS, BEETROOT_SEEDS, CARROT, POTATO, TORCHFLOWER_SEEDS, PITCHER_POD -> true;
+                    default -> false;
+                };
+            case COCOA:
+                yield seed == Material.COCOA_BEANS;  // Only allow cocoa to replant with itself
+            case NETHER_WART:
+                yield seed == Material.NETHER_WART;  // Only allow nether wart to replant with itself
+            default:
+                yield false;
         };
     }
 
@@ -45,6 +68,11 @@ public class CropReplantEventListener implements Listener {
         // Block is not a crop
         Block cropBlock = event.getClickedBlock();
         BlockData currBlockData = cropBlock.getBlockData();
+
+        if (!isReplantAllowed(seedType, cropBlock.getType())) {
+            return;
+        }
+
         if (cropBlock.getType() != Material.TORCHFLOWER) {
             // TORCHFLOWER_CROP is used for a growing torchflower, while TORCHFLOWER is used once fully grown, which is not ageable
             if (!(currBlockData instanceof Ageable ageableBlock)) {
