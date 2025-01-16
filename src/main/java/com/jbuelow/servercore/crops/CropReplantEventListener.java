@@ -8,7 +8,6 @@ import org.bukkit.block.data.Directional;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.inventory.ItemStack;
 
 public class CropReplantEventListener implements Listener {
     private final CropsModule module;
@@ -46,9 +45,9 @@ public class CropReplantEventListener implements Listener {
                     default -> false;
                 };
             case COCOA:
-                yield seed == Material.COCOA_BEANS;  // Only allow cocoa to replant with itself
+                yield seed == Material.COCOA_BEANS; //Only allow cocoa to replant with itself
             case NETHER_WART:
-                yield seed == Material.NETHER_WART;  // Only allow nether wart to replant with itself
+                yield seed == Material.NETHER_WART; //Only allow nether wart to replant with itself
             default:
                 yield false;
         };
@@ -56,48 +55,46 @@ public class CropReplantEventListener implements Listener {
 
     @EventHandler(ignoreCancelled = true)
     public void onPlayerInteract(PlayerInteractEvent event) {
-        ItemStack usedItem = event.getItem();
+        Material seedType = event.getMaterial();
+        Material plantingType = getCropMaterial(seedType);
+        if (plantingType == null) return;
 
-        if (usedItem == null) return;
         if (event.getClickedBlock() == null) return;
-
-        Material seedType = usedItem.getType();
-        Material cropType = getCropMaterial(seedType);
-        if (cropType == null) return;
-
-        // Block is not a crop
         Block cropBlock = event.getClickedBlock();
-        BlockData currBlockData = cropBlock.getBlockData();
+        Material existingType = cropBlock.getType();
+        BlockData existingData = cropBlock.getBlockData();
 
-        if (!isReplantAllowed(seedType, cropBlock.getType())) {
+        // Check that this seed is allowed to replant the existing crop
+        if (!isReplantAllowed(seedType, existingType)) {
             return;
         }
 
-        if (cropBlock.getType() != Material.TORCHFLOWER) {
-            // TORCHFLOWER_CROP is used for a growing torchflower, while TORCHFLOWER is used once fully grown, which is not ageable
-            if (!(currBlockData instanceof Ageable ageableBlock)) {
-                return;
-            }
-
-            // Crop is not fully grown
-            if (ageableBlock.getAge() < ageableBlock.getMaximumAge()) {
-                return;
+        // Growing torchflowers are TORCHFLOWER_CROP, but turn into a TORCHFLOWER once fully grown
+        // TORCHFLOWER is not ageable, so treat it as fully grown and skip age check
+        if (existingType != Material.TORCHFLOWER) {
+            if (existingData instanceof Ageable existingAgeable) {
+                if (existingAgeable.getAge() < existingAgeable.getMaximumAge()) {
+                    return; //Not fully grown
+                }
+            } else {
+                return; //Non-torchflower and non-ageable
             }
         }
 
         if (cropBlock.breakNaturally()) {
-            cropBlock.setType(cropType);
+            cropBlock.setType(plantingType);
 
-            BlockData newBlockData = cropBlock.getBlockData();
-            if (newBlockData instanceof Ageable newAge) {
+            BlockData replantedData = cropBlock.getBlockData();
+            if (replantedData instanceof Ageable newAge) {
                 newAge.setAge(0);
             }
 
-            if ((newBlockData instanceof Directional newDir) && (currBlockData instanceof Directional oldDir)) {
-                newDir.setFacing(oldDir.getFacing());
+            // Copy block facing direction when possible
+            if ((replantedData instanceof Directional replantDir) && (existingData instanceof Directional existingDir)) {
+                replantDir.setFacing(existingDir.getFacing());
             }
 
-            cropBlock.setBlockData(newBlockData);
+            cropBlock.setBlockData(replantedData);
         }
     }
 }
