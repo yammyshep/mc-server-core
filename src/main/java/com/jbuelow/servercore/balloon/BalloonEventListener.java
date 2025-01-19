@@ -1,8 +1,7 @@
 package com.jbuelow.servercore.balloon;
 
 import com.jbuelow.servercore.ServerCore;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
+import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -36,14 +35,24 @@ public class BalloonEventListener implements Listener {
     }
 
     private void updatePlayerBalloonState(Player player) {
-        ItemStack mainHand = player.getInventory().getItemInMainHand();
-        ItemStack offHand = player.getInventory().getItemInOffHand();
-
-        if (isBalloon(mainHand) || isBalloon(offHand)) {
+        if (getActiveBalloonItem(player) != null) {
             startBalloon(player);
         } else {
             endBalloon(player);
         }
+    }
+
+    private ItemStack getActiveBalloonItem(Player player) {
+        ItemStack mainHand = player.getInventory().getItemInMainHand();
+        ItemStack offHand = player.getInventory().getItemInOffHand();
+
+        if (isBalloon(mainHand)) {
+            return mainHand;
+        } else if (isBalloon(offHand)) {
+            return offHand;
+        }
+
+        return null;
     }
 
     public boolean isBallooning(Player player) {
@@ -72,6 +81,28 @@ public class BalloonEventListener implements Listener {
         if (restoredLevitation != null) {
             player.addPotionEffect(restoredLevitation);
         }
+    }
+
+    public void popBalloon(Player player) {
+        if (!isBallooning(player)) {
+            return;
+        }
+
+        ItemStack balloon = getActiveBalloonItem(player);
+        if (balloon != null) {
+            balloon.setAmount(balloon.getAmount() - 1);
+            endBalloon(player);
+
+            // Let the player fall a bit before off-hand or stacked balloons work again
+            Bukkit.getScheduler().runTaskLater(ServerCore.get(), () -> {
+                updatePlayerBalloonState(player);
+            }, 10L);
+        }
+
+        Location popLocation = player.getEyeLocation();
+        World world = player.getWorld();
+        world.playSound(popLocation, Sound.ENTITY_FIREWORK_ROCKET_BLAST, 1.0f, 1.0f);
+        world.spawnParticle(Particle.WHITE_SMOKE, popLocation, 50);
     }
 
     // Called when the player changes what item is selected in the hotbar
@@ -153,6 +184,32 @@ public class BalloonEventListener implements Listener {
                 event.getAction() == EntityPotionEffectEvent.Action.CHANGED) {
             event.setCancelled(true);
             prevLevitationEffects.put(targetPlayer, event.getNewEffect());
+        }
+    }
+
+    @EventHandler(ignoreCancelled = true)
+    public void onPlayerMove(PlayerMoveEvent event) {
+        if (!isBallooning(event.getPlayer())) {
+            return;
+        }
+
+        Player player = event.getPlayer();
+        Location touchingHead = event.getTo().clone();
+        touchingHead.add(0, player.getBoundingBox().getHeight(), 0);
+        Block aboveHead = touchingHead.getBlock();
+        if (!aboveHead.isEmpty()) {
+            Vector pointAboveHead = touchingHead.toVector();
+            pointAboveHead.subtract(aboveHead.getLocation().toVector());
+            boolean isColliding = false;
+            for (BoundingBox box : aboveHead.getCollisionShape().getBoundingBoxes()) {
+                if (box.contains(pointAboveHead)) {
+                    isColliding = true;
+                    break;
+                }
+            }
+            if (isColliding) {
+                popBalloon(event.getPlayer());
+            }
         }
     }
 }
