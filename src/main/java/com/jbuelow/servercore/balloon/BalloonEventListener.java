@@ -7,6 +7,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityPickupItemEvent;
 import org.bukkit.event.entity.EntityPotionEffectEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -102,7 +103,7 @@ public class BalloonEventListener implements Listener {
         Location popLocation = player.getEyeLocation();
         World world = player.getWorld();
         world.playSound(popLocation, Sound.ENTITY_FIREWORK_ROCKET_BLAST, 1.0f, 1.0f);
-        world.spawnParticle(Particle.WHITE_SMOKE, popLocation, 50);
+        player.spawnParticle(Particle.ITEM_CRACK, player.getEyeLocation(),50, balloon);
     }
 
     // Called when the player changes what item is selected in the hotbar
@@ -210,6 +211,21 @@ public class BalloonEventListener implements Listener {
             if (isColliding) {
                 popBalloon(event.getPlayer());
             }
+        }
+    }
+
+    @EventHandler(ignoreCancelled = true)
+    public void onEntityDamage(EntityDamageEvent event) {
+        if (!(event.getEntity() instanceof Player damagedPlayer)) {
+            return;
+        }
+
+        switch (event.getCause()) {
+            case ENTITY_EXPLOSION:
+            case LIGHTNING:
+            case PROJECTILE:
+            case FALLING_BLOCK:
+                popBalloon(damagedPlayer);
         }
     }
 }
