@@ -3,6 +3,7 @@ modules:
   balloon: true
   crops: true
   spectator: true
+  carry: true
 
 spectator:
   prevent-void-damage: true
