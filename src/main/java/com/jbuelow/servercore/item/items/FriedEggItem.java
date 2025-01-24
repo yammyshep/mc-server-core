@@ -29,18 +29,6 @@ public class FriedEggItem extends CustomItem implements ItemRecipe {
 
     public FriedEggItem(final int amount, final short damage) {
         super(Material.BAKED_POTATO, amount, damage);
-
-        ItemMeta meta = getItemMeta();
-        assert (meta != null);
-
-        if (CompatUtils.serverSupportsDataComponents()) {
-            FoodComponent food = meta.getFood();
-            food.setNutrition(3);
-            food.setSaturation(7.2f);
-            meta.setFood(food);
-        }
-
-        setItemMeta(meta);
     }
 
     @Override
@@ -67,5 +55,18 @@ public class FriedEggItem extends CustomItem implements ItemRecipe {
     @Override
     public boolean hasCustomItemModel() {
         return true;
+    }
+
+    @SuppressWarnings("UnstableApiUsage")
+    @Override
+    public void applyCustomItemMeta(ItemMeta meta) {
+        super.applyCustomItemMeta(meta);
+
+        if (CompatUtils.serverSupportsDataComponents()) {
+            FoodComponent food = meta.getFood();
+            food.setNutrition(3);
+            food.setSaturation(7.2f);
+            meta.setFood(food);
+        }
     }
 }

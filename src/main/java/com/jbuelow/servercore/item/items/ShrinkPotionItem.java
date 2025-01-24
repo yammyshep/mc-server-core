@@ -34,13 +34,6 @@ public class ShrinkPotionItem extends CustomItem implements Listener, ItemRecipe
 
     public ShrinkPotionItem(final int amount, final short damage) {
         super(Material.POTION, amount, damage);
-
-        ItemMeta meta = getItemMeta();
-        PotionMeta potion = (PotionMeta) meta;
-        if (potion == null) throw new RuntimeException("Shrink potion has no potion meta");
-        potion.setBasePotionType(PotionType.WATER);
-        potion.setColor(Color.LIME);
-        setItemMeta(meta);
     }
 
     @Override
@@ -68,5 +61,14 @@ public class ShrinkPotionItem extends CustomItem implements Listener, ItemRecipe
 
         AttributeInstance scaleAttribute = event.getPlayer().getAttribute(Attribute.SCALE);
         scaleAttribute.setBaseValue(Math.max(scaleAttribute.getDefaultValue() * 0.25, scaleAttribute.getBaseValue() - 0.25));
+    }
+
+    @Override
+    public void applyCustomItemMeta(ItemMeta meta) {
+        super.applyCustomItemMeta(meta);
+
+        PotionMeta potion = (PotionMeta) meta;
+        potion.setBasePotionType(PotionType.WATER);
+        potion.setColor(Color.LIME);
     }
 }

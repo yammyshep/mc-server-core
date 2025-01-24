@@ -3,10 +3,16 @@ package com.jbuelow.servercore.item;
 import com.jbuelow.servercore.PluginModule;
 import com.jbuelow.servercore.ServerCore;
 import com.jbuelow.servercore.ServerCoreModule;
+import com.jbuelow.servercore.item.event.CustomItemUpdateEventListener;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.event.Listener;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.Recipe;
+import org.bukkit.inventory.meta.Damageable;
+import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.persistence.PersistentDataContainer;
+import org.bukkit.persistence.PersistentDataType;
 import org.reflections.Reflections;
 
 import java.lang.reflect.InvocationTargetException;
@@ -29,6 +35,8 @@ public class CustomItemsModule implements ServerCoreModule {
 
     @Override
     public void onEnable() {
+        plugin.getServer().getPluginManager().registerEvents(new CustomItemUpdateEventListener(this), plugin);
+
         Reflections reflect = new Reflections();
 
         // Register any CustomItem classes with RegisterCustomItem annotation
@@ -105,6 +113,46 @@ public class CustomItemsModule implements ServerCoreModule {
 
     public Optional<CustomItem> getItem(NamespacedKey itemKey) {
         return Optional.ofNullable(customItemMap.get(itemKey));
+    }
+
+    public boolean isCustomItem(ItemStack item) {
+        ItemMeta meta = item.getItemMeta();
+        if (meta == null) return false;
+
+        PersistentDataContainer data = meta.getPersistentDataContainer();
+        return data.has(CustomItem.customItemKey, PersistentDataType.STRING);
+    }
+
+    public Optional<CustomItem> getCustomItem(ItemStack item) {
+        ItemMeta meta = item.getItemMeta();
+        if (meta == null) return Optional.empty();
+
+        PersistentDataContainer data = meta.getPersistentDataContainer();
+        if (!data.has(CustomItem.customItemKey, PersistentDataType.STRING)) {
+            return Optional.empty();
+        }
+
+        String keyString = data.getOrDefault(CustomItem.customItemKey, PersistentDataType.STRING, "");
+        NamespacedKey itemKey = NamespacedKey.fromString(keyString, ServerCore.get());
+        Optional<CustomItem> itemOpt = getItem(itemKey);
+        if (itemOpt.isEmpty()) {
+            return Optional.empty();
+        }
+
+        short damage = 0;
+        if (item instanceof Damageable damageableItem) {
+            damage = (short) damageableItem.getDamage();
+        }
+
+        Class<? extends CustomItem> itemClass = itemOpt.get().getClass();
+        try {
+            CustomItem customItem = itemClass.getConstructor(int.class, short.class).newInstance(item.getAmount(), damage);
+            return Optional.of(customItem);
+        } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+            log.severe("Failure to clone custom item class: " + itemClass.getCanonicalName());
+            e.printStackTrace();
+            return Optional.empty();
+        }
     }
 
     public Optional<CustomItem> findItemByClass(Class<CustomItem> customItemClass) {

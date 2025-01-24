@@ -7,14 +7,17 @@ import org.bukkit.inventory.meta.ItemMeta;
 public abstract class ThickIronToolItem extends CustomItem {
     public ThickIronToolItem(Material material, final int amount, final short damage) {
         super(material, amount, damage);
-
-        ItemMeta meta = getItemMeta();
-        meta.setUnbreakable(true);
-        setItemMeta(meta);
     }
 
     @Override
     public boolean hasCustomItemModel() {
         return true;
+    }
+
+    @Override
+    public void applyCustomItemMeta(ItemMeta meta) {
+        super.applyCustomItemMeta(meta);
+
+        meta.setUnbreakable(true);
     }
 }

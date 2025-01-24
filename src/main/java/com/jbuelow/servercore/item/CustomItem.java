@@ -2,7 +2,7 @@ package com.jbuelow.servercore.item;
 
 import com.jbuelow.servercore.ServerCore;
 import com.jbuelow.servercore.util.CompatUtils;
-import org.bukkit.ChatColor;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
@@ -14,7 +14,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Objects;
 
 public abstract class CustomItem extends ItemStack {
-    protected static final NamespacedKey customItemKey = new NamespacedKey(ServerCore.get(), "custom_item_key");
+    static final NamespacedKey customItemKey = new NamespacedKey(ServerCore.get(), "custom_item_key");
 
     public CustomItem(@NotNull final Material type) {
         this(type, 1);
@@ -27,26 +27,13 @@ public abstract class CustomItem extends ItemStack {
     public CustomItem(@NotNull final Material type, final int amount, final short damage) {
         super(type, amount, damage);
 
-        ItemMeta meta = getItemMeta();
-        assert meta != null;
-
-        meta.getPersistentDataContainer().set(customItemKey, PersistentDataType.STRING, getInternalItemKey());
-
-        meta.setDisplayName(ChatColor.RESET + getName());
-
-        if (hasCustomItemModel()) {
-            if (CompatUtils.serverSupportsModelDataComponent()) {
-                meta.setItemModel(getItemKey());
-            } else {
-                meta.setCustomModelData(getItemKey().hashCode());
-            }
-        }
-
-        setItemMeta(meta);
+        editMeta(this::applyCustomItemMeta);
     }
 
     public boolean isItem(ItemStack itemStack) {
-        if (!isSimilar(itemStack)) return false;
+        if (itemStack.getType() != getType()) {
+            return false;
+        }
 
         ItemMeta meta = itemStack.getItemMeta();
         if (meta == null) return false;
@@ -69,5 +56,19 @@ public abstract class CustomItem extends ItemStack {
 
     public boolean hasCustomItemModel() {
         return false;
+    }
+
+    public void applyCustomItemMeta(ItemMeta meta) {
+        meta.getPersistentDataContainer().set(customItemKey, PersistentDataType.STRING, getInternalItemKey());
+
+        meta.itemName(Component.text(getName()));
+
+        if (hasCustomItemModel()) {
+            if (CompatUtils.serverSupportsModelDataComponent()) {
+                meta.setItemModel(getItemKey());
+            } else {
+                meta.setCustomModelData(getItemKey().hashCode());
+            }
+        }
     }
 }
