@@ -35,7 +35,7 @@ public class CarryCommand extends Command {
             return false;
         }
 
-        module.mountPlayers(otherPlayer, player, player);
+        module.attemptMountPlayers(otherPlayer, player, player);
         return true;
     }
 }

@@ -34,7 +34,7 @@ public class RideCommand extends Command {
             return false;
         }
 
-        module.mountPlayers(player, otherPlayer, player);
+        module.attemptMountPlayers(player, otherPlayer, player);
         return true;
     }
 }
