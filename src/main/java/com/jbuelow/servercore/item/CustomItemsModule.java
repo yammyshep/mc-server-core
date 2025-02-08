@@ -4,6 +4,8 @@ import com.jbuelow.servercore.PluginModule;
 import com.jbuelow.servercore.ServerCore;
 import com.jbuelow.servercore.ServerCoreModule;
 import com.jbuelow.servercore.item.event.CustomItemUpdateEventListener;
+import com.jbuelow.servercore.item.event.ItemOverridesEventListener;
+import com.jbuelow.servercore.item.overrides.WearableSaddleItemOverride;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.event.Listener;
@@ -27,6 +29,8 @@ public class CustomItemsModule implements ServerCoreModule {
     private static final Logger log = Bukkit.getLogger();
     private final ServerCore plugin;
 
+    private final ItemOverrideRegistry itemOverrideRegistry = new ItemOverrideRegistry();
+
     private final Map<NamespacedKey, CustomItem> customItemMap = new HashMap<>();
 
     public CustomItemsModule(ServerCore plugin) {
@@ -36,6 +40,9 @@ public class CustomItemsModule implements ServerCoreModule {
     @Override
     public void onEnable() {
         plugin.getServer().getPluginManager().registerEvents(new CustomItemUpdateEventListener(this), plugin);
+        plugin.getServer().getPluginManager().registerEvents(new ItemOverridesEventListener(this), plugin);
+
+        itemOverrideRegistry.addOverride(new WearableSaddleItemOverride());
 
         Reflections reflect = new Reflections();
 
@@ -163,5 +170,9 @@ public class CustomItemsModule implements ServerCoreModule {
         }
 
         return Optional.empty();
+    }
+
+    public ItemOverrideRegistry getItemOverrideRegistry() {
+        return itemOverrideRegistry;
     }
 }
