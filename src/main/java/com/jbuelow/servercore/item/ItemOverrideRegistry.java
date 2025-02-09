@@ -1,9 +1,12 @@
 package com.jbuelow.servercore.item;
 
 import org.bukkit.Material;
+import org.bukkit.block.ShulkerBox;
 import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.BlockStateMeta;
+import org.bukkit.inventory.meta.BundleMeta;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -39,6 +42,18 @@ public class ItemOverrideRegistry {
 
         for (ItemStackMaterialPropertyOverride override : overrides.getOrDefault(itemStack.getType(), List.of())) {
             override.apply(itemStack);
+        }
+
+        if (itemStack.getItemMeta() instanceof BlockStateMeta blockMeta) {
+            if (blockMeta.getBlockState() instanceof ShulkerBox shulker) {
+                applyOverrides(shulker.getInventory());
+            }
+        }
+
+        if (itemStack.getItemMeta() instanceof BundleMeta bundleMeta) {
+            for (ItemStack bundleItem : bundleMeta.getItems()) {
+                applyOverrides(bundleItem);
+            }
         }
     }
 
